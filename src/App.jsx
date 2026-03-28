@@ -1,121 +1,64 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from "react";
+import { styles } from "./assets/components/styles";
+import EmployeeForm from "./assets/components/EmployeeForm";
+import EmployeeList from "./assets/components/EmployeeList";
+import initialEmployees from "./assets/data/employee";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [employees, setEmployees] = useState(initialEmployees);
+
+  const handleAddEmployee = (newEmployee) => {
+    const employeeWithId = {
+      ...newEmployee,
+      id:
+        employees.length > 0
+          ? Math.max(...employees.map((emp) => emp.id)) + 1
+          : 1,
+    };
+    setEmployees([...employees, employeeWithId]);
+  };
+
+  const getTotalCount = () => employees.length;
+  const getActiveCount = () =>
+    employees.filter((emp) => emp.status === "actif").length;
+  const getInactiveCount = () =>
+    employees.filter((emp) => emp.status === "inactif").length;
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
+    <div style={styles.page}>
+      <header style={styles.header}>
         <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+          <h1 style={styles.headerTitle}>RH Dashboard</h1>
+          <p style={styles.headerSub}>
+            Département Ressources Humaines - Gestion des profils
           </p>
         </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        <div style={{ display: "flex", gap: "20px" }}>
+          <div style={styles.counter}>
+            <span style={styles.counterNum}>{getTotalCount()}</span>
+            <span style={styles.counterLabel}>Total</span>
+          </div>
+          <div style={styles.counter}>
+            <span style={styles.counterNum}>{getActiveCount()}</span>
+            <span style={styles.counterLabel}>Actifs</span>
+          </div>
+          <div style={styles.counter}>
+            <span style={styles.counterNum}>{getInactiveCount()}</span>
+            <span style={styles.counterLabel}>Inactifs</span>
+          </div>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      </header>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <main style={styles.main}>
+        <EmployeeForm onAdd={handleAddEmployee} />
+
+        <div style={styles.divider}></div>
+
+        <EmployeeList employees={employees} />
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
